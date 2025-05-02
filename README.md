@@ -21,17 +21,18 @@ This is a Flask-based backend API developed for a mobile application built with 
 
 ## Folder Structure
 
-- project/
-  │
-  ├── app/
-  │ ├── init.py
-  │ ├── model/
-  │ │ └── models.py # SQLAlchemy models
-  │ ├── api/
-  │ │ └── views.py # API endpoints (MethodViews)
-  │
-  ├── static/uploads/ # Uploaded product images
-  ├── run.py # Entry point for the Flask app
+project/
+│
+├── app/
+│   ├── __init__.py
+│   ├── model/
+│   │   └── models.py              # SQLAlchemy models
+│   ├── api/
+│   │   └── views.py               # API endpoints using MethodViews
+│
+├── static/uploads/                # Uploaded product images
+├── run.py                         # Entry point for the Flask app
+
 
 
 ## Setup Instructions
