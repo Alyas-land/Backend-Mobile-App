@@ -20,7 +20,7 @@ This is a Flask-based backend API developed for a mobile application built with 
 - Flask MethodViews for API routes
 
 ## Folder Structure
-
+```
 project/
 │
 ├── app/
@@ -33,7 +33,7 @@ project/
 ├── static/uploads/                # Uploaded product images
 ├── run.py                         # Entry point for the Flask app
 
-
+```
 
 ## Setup Instructions
 
