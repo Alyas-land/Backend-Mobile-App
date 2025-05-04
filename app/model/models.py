@@ -33,7 +33,7 @@ class Product(db.Model):
 
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
 
-    basket_items = db.relationship('basketItem',backref='product', lazy=True)
+    basket_items = db.relationship('BasketItem',backref='product', lazy=True)
 
 
 class Basket(db.Model):

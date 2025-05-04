@@ -3,7 +3,7 @@ from flask.views import MethodView
 from app.model.models import User
 from config import db
 
-class Register(MethodView):
+class RegisterAPI(MethodView):
     def post(self):
         data = request.get_json()
 
@@ -43,7 +43,7 @@ class Register(MethodView):
 
 
 
-class Login(MethodView):
+class LoginAPI(MethodView):
     def post(self):
         data = request.get_json()
         username = data.get('username')
