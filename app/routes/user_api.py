@@ -4,19 +4,26 @@ from app.model.models import User, Product, Basket, BasketItem
 from config import db
 
 class UserInfoAPI(MethodView):
-    def get(self):
-        user_id = request.args.get('user_id')
+    def get(self, user_id):
 
         user_info = User.query.filter_by(id=user_id).one_or_none()
 
+        if user_info:
+
+            return jsonify(
+                {
+                    'name': user_info.name,
+                    'username': user_info.username,
+                    'phone_number': user_info.phone_number,
+                    'lastlogin': user_info.lastlogin
+                }
+            ), 200
+        
         return jsonify(
             {
-                'name': user_info.name,
-                'username': user_info.username,
-                'phone_nubmer': user_info.phone_number,
-                'lastlogin': user_info.lastlogin
+                'msg': 'User Not Found'
             }
-        ), 200
+        ), 400
     
 
 class UserGetProductsAPI(MethodView):

@@ -16,6 +16,8 @@ from app.routes.auth_api import LoginAPI
 from app.routes.user_api import UserInfoAPI
 
 #routes
+
+# Authentication
 app.add_url_rule('/api/user/login', view_func=LoginAPI.as_view('login_api'))
 app.add_url_rule('/api/user/info/<int:user_id>', view_func=UserInfoAPI.as_view('user_info_api'))
 
