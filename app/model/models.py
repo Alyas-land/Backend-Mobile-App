@@ -27,6 +27,7 @@ class Product(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable= False)
+    img_path = db.Column(db.String(200), nullable=False)
     descrption = db.Column(db.Text, nullable= False)
     price = db.Column(db.String(200), nullable=False)
     quantity = db.Column(db.String(200), nullable=False)

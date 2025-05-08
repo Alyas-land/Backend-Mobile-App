@@ -32,13 +32,17 @@ class UserGetProductsAPI(MethodView):
         get_all_products = Product.query.all()
         result = [
             {
-                'id': item.id,
+                'id': int(item.id),
                 'name': item.name,
-                'description': item.description,
-                'price': item.price
+                'imgPath': item.img_path,
+                'description': item.descrption,
+                
+                'price': int(item.price)
             } 
             for item in get_all_products
         ]
+
+        print(result)
         return jsonify(result), 200
 
 
