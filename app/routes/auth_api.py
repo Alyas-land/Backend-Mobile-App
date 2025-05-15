@@ -9,8 +9,10 @@ class RegisterAPI(MethodView):
 
         name = data.get('name')
         phone_number = data.get('phone_number')
+        email = data.get('email')
         username = data.get('username')
         password = data.get('password')
+
 
         check_exist_user = User.query.filter_by(username=username).one_or_none()
 
@@ -24,6 +26,7 @@ class RegisterAPI(MethodView):
         new_user = User(
             name = name,
             phone_number = phone_number,
+            email = email,
             username = username,
             password = password
             #add lat login
@@ -34,7 +37,8 @@ class RegisterAPI(MethodView):
 
         return jsonify(
             {
-                'msg' : 'Your acoount successfully created.'
+                'msg' : 'Your acoount successfully created.',
+                'userId': new_user.id
             }
         )
 

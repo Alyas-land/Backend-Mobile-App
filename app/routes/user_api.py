@@ -3,6 +3,7 @@ from flask.views import MethodView
 from app.model.models import User, Product, Basket, BasketItem
 from config import db
 
+
 class UserInfoAPI(MethodView):
     def get(self, user_id):
 
@@ -54,7 +55,7 @@ class UserAddToBasketAPI(MethodView):
         quantity = data.get('quantity')
 
 
-        check_basket = Basket.query.filter_by(user_id=user_id, is_active=True).one_or_none()
+        check_basket = Basket.query.filter_by(user_id=user_id, is_active=True).first()
         if check_basket:
             check_exist_product_in_basket = BasketItem.query.filter_by(basket_id=check_basket.id, product_id=product_id).one_or_none()
 
@@ -65,7 +66,7 @@ class UserAddToBasketAPI(MethodView):
                 new_basket_item = BasketItem(
                     basket_id = check_basket.id,
                     product_id = product_id,
-                    quantity = quantity,
+                    quantity = 1,
                     descrption = 'Add to My Basket',
                     # crested_date,
                 )
@@ -77,6 +78,7 @@ class UserAddToBasketAPI(MethodView):
                 descrption = 'Create Basket',
                 # crested_at ,
             )
+            # new_basket.crested_at = new_basket.set_created_at_shamsi()
             db.session.add(new_basket)
             db.session.flush()
             
@@ -84,7 +86,7 @@ class UserAddToBasketAPI(MethodView):
             new_basket_item = BasketItem(
                     basket_id = new_basket.id,
                     product_id = product_id,
-                    quantity = quantity,
+                    quantity = 1,
                     descrption = 'Add to My Basket',
                     # crested_date,
                 )
@@ -100,8 +102,8 @@ class UserAddToBasketAPI(MethodView):
     
 
 class UserShowBasketItem(MethodView):
-    def get(self):
-        user_id = request.args.get('user_id')
+    def get(self, user_id):
+        
 
         get_basket = Basket.query.filter_by(user_id=user_id, is_active=True).one_or_none()
         if not get_basket:
@@ -115,25 +117,40 @@ class UserShowBasketItem(MethodView):
                 'product_description': item.product.descrption,
                 'product_price': item.product.price,
                 'quantity': item.quantity,
+                'img_path': item.product.img_path,
                 'item_descrption': item.descrption,
                 'item_created_date': item.crested_date,
             }
-            for item in get_basket
+            for item in basket_item_request
         ]
 
         return jsonify(result), 200
     
 
 class UserSubmitedActiveBasketAPI(MethodView):
-    def get(self):
-        basket_id = request.args.get('basket_id')
-
-        basket_request = Basket.query.filter_by(id=basket_id, is_active=True).one_or_none()
+    def get(self, user_id):
+        
+        basket_request = Basket.query.filter_by(user_id=user_id, is_active=True).one_or_none()
         if not basket_request:
             return jsonify({'msg': 'Basket not found'}), 404
         
         basket_request.is_active = False
-        return jsonify({'msg': 'Basket successfully submited'}), 404
+        db.session.commit()
+        return jsonify({'msg': 'Basket successfully submited'}), 200
+    
+
+class UserCancelingBasketApi(MethodView):
+    def get(self, user_id):
+
+        basket_request = Basket.query.filter_by(user_id=user_id, is_active=True).one_or_none()
+        if not basket_request:
+            return jsonify({'msg': 'Basket not found'}), 404
+        
+        db.session.delete(basket_request)
+        db.session.commit()
+        return jsonify({'msg': 'Basket successfully canceled'}), 200
+
+
 
         
 
