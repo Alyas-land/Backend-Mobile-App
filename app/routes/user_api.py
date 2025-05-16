@@ -151,7 +151,37 @@ class UserCancelingBasketApi(MethodView):
         return jsonify({'msg': 'Basket successfully canceled'}), 200
 
 
+class UserAddProductFromCard(MethodView):
+    def get(self, user_id, product_id):
+        
+        basket_target = Basket.query.filter_by(user_id=user_id, is_active=True).one_or_none()
+
+        basket_item_target = BasketItem.query.filter_by(basket_id=basket_target.id, product_id=product_id).one_or_none()
+
+        basket_item_target.quantity += 1
+        db.session.commit()
+
+        return jsonify(200)
 
         
 
+class UserMinusProductFromCard(MethodView):
+    def get(self, user_id, product_id):
+
+        basket_target = Basket.query.filter_by(user_id=user_id, is_active=True).one_or_none()
+
+        basket_item_target = BasketItem.query.filter_by(basket_id=basket_target.id, product_id=product_id).one_or_none()
+
+        if (basket_item_target.quantity == 1):
+            print('in if')
+            db.session.delete(basket_item_target)
+            db.session.commit()
+
+            return jsonify(200)
+        
+        basket_item_target.quantity -= 1
+        
+        db.session.commit()
+
+        return jsonify(200)
     

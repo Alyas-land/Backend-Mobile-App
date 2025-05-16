@@ -19,7 +19,7 @@ migrate.init_app(app, db)
 from app.routes.auth_api import LoginAPI, RegisterAPI
 from app.routes.user_api import UserInfoAPI, UserGetProductsAPI,\
 UserAddToBasketAPI, UserShowBasketItem, UserSubmitedActiveBasketAPI,\
-UserCancelingBasketApi
+UserCancelingBasketApi, UserAddProductFromCard, UserMinusProductFromCard
 
 #routes
 
@@ -32,6 +32,8 @@ app.add_url_rule('/api/user/register', view_func=RegisterAPI.as_view('register_a
 app.add_url_rule('/api/user/info/<int:user_id>', view_func=UserInfoAPI.as_view('user_info_api'))
 app.add_url_rule('/api/user/products', view_func=UserGetProductsAPI.as_view('user_products_api'))
 app.add_url_rule('/api/user/products/add_to_card', view_func=UserAddToBasketAPI.as_view('user_add_card_api'))
+app.add_url_rule('/api/user/<int:user_id>/products/<int:product_id>/add_to_card_from_card', view_func=UserAddProductFromCard.as_view('user_add_card_from_card_api'))
+app.add_url_rule('/api/user/<int:user_id>/products/<int:product_id>/minus_to_card_from_card', view_func=UserMinusProductFromCard.as_view('user_minus_card_from_card_api'))
 app.add_url_rule('/api/user/active_basket/<int:user_id>', view_func=UserShowBasketItem.as_view('user_active_basket'))
 app.add_url_rule('/api/user/submit_basket/<int:user_id>', view_func=UserSubmitedActiveBasketAPI.as_view('user_submit_active_basket'))
 app.add_url_rule('/api/user/cancel_basket/<int:user_id>', view_func=UserCancelingBasketApi.as_view('user_cancel_active_basket'))
