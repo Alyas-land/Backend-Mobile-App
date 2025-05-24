@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from app.model.models import User, Product, Basket, BasketItem
+from app.model.models import User, Product, Basket, BasketItem, Category
 from config import db
 
 
@@ -8,15 +8,17 @@ class UserInfoAPI(MethodView):
     def get(self, user_id):
 
         user_info = User.query.filter_by(id=user_id).one_or_none()
+        print(user_info.img_path)
 
         if user_info:
 
             return jsonify(
                 {
                     'name': user_info.name,
-                    'username': user_info.username,
+                    'email': user_info.email,
                     'phone_number': user_info.phone_number,
-                    'lastlogin': user_info.lastlogin
+                    'username': user_info.username,
+                    'profile_path': user_info.img_path
                 }
             ), 200
         
@@ -26,11 +28,50 @@ class UserInfoAPI(MethodView):
             }
         ), 400
     
+class UserEditInfo(MethodView):
+    def post(self, user_id):
+        data = request.get_json()
+        print(data)
+
+        user = User.query.filter_by(id=user_id).one_or_none()
+
+        if user == None:
+            return jsonify({
+                'msg': 'User not found'
+            }), 400
+        
+
+        if 'name' in data:
+            user.name = data['name']
+
+        if 'email' in data:
+            user.email = data['email']
+
+        if 'phone_number' in data:
+            user.phone_number = data['phone_number']
+
+        if 'username' in data:
+            user.username = data['username']
+
+        if 'password' in data:
+            user.password = data['password']
+
+        db.session.commit()
+
+        return jsonify({
+            'msg': 'Info Edited'
+        }), 200
+            
+
+
+
+
+    
 
 class UserGetProductsAPI(MethodView):
-    def get(self):
+    def get(self, category_id):
 
-        get_all_products = Product.query.all()
+        get_all_products = Product.query.filter_by(category_id=category_id).all()
         result = [
             {
                 'id': int(item.id),
@@ -45,6 +86,24 @@ class UserGetProductsAPI(MethodView):
 
         print(result)
         return jsonify(result), 200
+    
+
+class UserGetCategoriesAPI(MethodView):
+    def get(self):
+
+        get_all_categories = Category.query.all()
+        result = [
+            {
+                'id': int(item.id),
+                'title': item.name,
+                'img_path': item.img_path,
+            } 
+            for item in get_all_categories
+        ]
+
+        print(result)
+        return jsonify(result), 200
+
 
 
 class UserAddToBasketAPI(MethodView):
@@ -185,3 +244,53 @@ class UserMinusProductFromCard(MethodView):
 
         return jsonify(200)
     
+
+
+class UserAllBaskets(MethodView):
+    def get(Self, user_id):
+
+        all_baskets_query = Basket.query.filter_by(user_id=user_id, is_active=False).all()
+        print(all_baskets_query)
+        if all_baskets_query:
+            result = [
+                {
+                    'basket_id': int(basket.id),
+                    'basket_title': basket.title,
+                    'basket_created_at': basket.crested_at
+                } 
+                for basket in all_baskets_query   
+            ]
+            print(result)
+            return jsonify(result), 200
+        
+        return jsonify(
+            {
+                'msg': None
+            },
+        ), 400
+    
+
+class UserDisplayBasketItemNotActive(MethodView):
+    def get(self, basket_id, user_id):
+        get_basket = Basket.query.filter_by(id=basket_id, user_id=user_id).one_or_none()
+        if not get_basket:
+            print('not if')
+            return jsonify({'msg': 'Basket not found'}), 404
+        
+        basket_item_request = BasketItem.query.filter_by(basket_id=basket_id).all()
+        result = [
+            {
+                'product_id': item.product_id,
+                'product_name': item.product.name,
+                'product_description': item.product.descrption,
+                'product_price': item.product.price,
+                'quantity': item.quantity,
+                'img_path': item.product.img_path,
+                'item_descrption': item.descrption,
+                'item_created_date': item.crested_date,
+            }
+            for item in basket_item_request
+        ]
+        print(result)
+
+        return jsonify(result), 200

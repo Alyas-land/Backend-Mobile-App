@@ -19,7 +19,8 @@ migrate.init_app(app, db)
 from app.routes.auth_api import LoginAPI, RegisterAPI
 from app.routes.user_api import UserInfoAPI, UserGetProductsAPI,\
 UserAddToBasketAPI, UserShowBasketItem, UserSubmitedActiveBasketAPI,\
-UserCancelingBasketApi, UserAddProductFromCard, UserMinusProductFromCard
+UserCancelingBasketApi, UserAddProductFromCard, UserMinusProductFromCard,\
+UserAllBaskets, UserDisplayBasketItemNotActive, UserGetCategoriesAPI, UserEditInfo
 
 #routes
 
@@ -30,14 +31,17 @@ app.add_url_rule('/api/user/register', view_func=RegisterAPI.as_view('register_a
 
 # User route
 app.add_url_rule('/api/user/info/<int:user_id>', view_func=UserInfoAPI.as_view('user_info_api'))
-app.add_url_rule('/api/user/products', view_func=UserGetProductsAPI.as_view('user_products_api'))
+app.add_url_rule('/api/user/info/edit/<int:user_id>', view_func=UserEditInfo.as_view('user_edit_info_api'))
+app.add_url_rule('/api/user/products/category/<int:category_id>', view_func=UserGetProductsAPI.as_view('user_products_api'))
+app.add_url_rule('/api/user/category', view_func=UserGetCategoriesAPI.as_view('user_categories_api'))
 app.add_url_rule('/api/user/products/add_to_card', view_func=UserAddToBasketAPI.as_view('user_add_card_api'))
 app.add_url_rule('/api/user/<int:user_id>/products/<int:product_id>/add_to_card_from_card', view_func=UserAddProductFromCard.as_view('user_add_card_from_card_api'))
 app.add_url_rule('/api/user/<int:user_id>/products/<int:product_id>/minus_to_card_from_card', view_func=UserMinusProductFromCard.as_view('user_minus_card_from_card_api'))
 app.add_url_rule('/api/user/active_basket/<int:user_id>', view_func=UserShowBasketItem.as_view('user_active_basket'))
 app.add_url_rule('/api/user/submit_basket/<int:user_id>', view_func=UserSubmitedActiveBasketAPI.as_view('user_submit_active_basket'))
 app.add_url_rule('/api/user/cancel_basket/<int:user_id>', view_func=UserCancelingBasketApi.as_view('user_cancel_active_basket'))
-
+app.add_url_rule('/api/user/<int:user_id>/basket_history', view_func=UserAllBaskets.as_view('user_all_baskets'))
+app.add_url_rule('/api/user/<int:user_id>/basket_not_active/<int:basket_id>', view_func=UserDisplayBasketItemNotActive.as_view('user_display_not_active_basket'))
 
 @app.before_request
 def createDatabase():

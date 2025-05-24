@@ -13,7 +13,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(200), nullable= False)
     username = db.Column(db.String(200), nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    lastlogin = db.Column(db.String(200), nullable=False, default= JalaliDate(JalaliDateTime.now()).strftime("%Y/%m/%d -- %H:%M"))
+    lastlogin = db.Column(db.String(200), nullable=False, default= JalaliDateTime.now().strftime("%Y/%m/%d -- %H:%M"))
+    img_path = db.Column(db.String(200))
 
 class Category(db.Model):
     __tablename__ = 'categories'
@@ -21,6 +22,9 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable= False)
     descrption = db.Column(db.Text, nullable= False)
+    img_path = db.Column(db.String(200))
+
+
     
     products = db.relationship('Product', backref='category', lazy=True)
 
@@ -46,8 +50,9 @@ class Basket(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
+    title = db.Column(db.String(1000), nullable=False, default=f'سبد خرید')
     descrption = db.Column(db.Text,)
-    crested_at = db.Column(db.String(200), default= JalaliDate(JalaliDateTime.now()).strftime("%Y/%m/%d -- %H:%M"))
+    crested_at = db.Column(db.String(200), default= JalaliDateTime.now().strftime("%Y/%m/%d -- %H:%M"))
     is_active = db.Column(db.Boolean, default=True)
 
     items = db.relationship('BasketItem', backref='basket', lazy=True)

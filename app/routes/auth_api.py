@@ -1,17 +1,40 @@
 from flask import jsonify, request
 from flask.views import MethodView
+from werkzeug.utils import secure_filename
 from app.model.models import User
 from config import db
+import os
+from config import app
 
 class RegisterAPI(MethodView):
     def post(self):
-        data = request.get_json()
+    
+        name = request.form.get('name')
+        phone_number = request.form.get('phone_number')
+        email = request.form.get('email')
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-        name = data.get('name')
-        phone_number = data.get('phone_number')
-        email = data.get('email')
-        username = data.get('username')
-        password = data.get('password')
+        if 'profile_image' not in request.files:
+            return jsonify({
+                'error': 'No profile image uploaded'
+            }), 400
+        
+        file = request.files['profile_image']
+
+        if file.name == '':
+            return jsonify({
+                'error': 'No selected file'
+            }), 400
+        
+        user_folder = os.path.join(app.config['UPLOAD_FOLDER'], username)
+        os.makedirs(user_folder, exist_ok=True)
+        
+        filename = secure_filename(file.filename)
+        print(filename)
+        save_path = os.path.join(user_folder, filename)
+        print(save_path)
+        file.save(save_path)
 
 
         check_exist_user = User.query.filter_by(username=username).one_or_none()
@@ -28,7 +51,8 @@ class RegisterAPI(MethodView):
             phone_number = phone_number,
             email = email,
             username = username,
-            password = password
+            password = password,
+            img_path = save_path
             #add lat login
         )
 
