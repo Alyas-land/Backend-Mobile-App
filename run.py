@@ -24,6 +24,10 @@ UserAllBaskets, UserDisplayBasketItemNotActive, UserGetCategoriesAPI, UserEditIn
 
 #routes
 
+from app.controller import visitor
+# Main Page
+app.add_url_rule('/', view_func=visitor.index, endpoint='index')
+
 # Authentication route
 app.add_url_rule('/api/user/login', view_func=LoginAPI.as_view('login_api'))
 app.add_url_rule('/api/user/register', view_func=RegisterAPI.as_view('register_api'), methods= ['POST'])
